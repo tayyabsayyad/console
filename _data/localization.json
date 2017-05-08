@@ -224,5 +224,12 @@
     "de": "Dezember"
   }, {
     "ko": "12월"
+  }],
+  "related_posts": [{
+    "en": "Related Posts"
+  }, {
+    "de": "Verwandte Beiträge"
+  }, {
+    "ko": "관련 포스트"
   }]
 }

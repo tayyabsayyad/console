@@ -132,6 +132,7 @@ blockquote > :last-child {
 pre,
 code {
   font-size: 15px;
+  font-weight: bold;
   border: 1px solid #e8e8e8;
   border-radius: 3px;
   background-color: #eef; }
@@ -145,7 +146,8 @@ pre {
   pre > code {
     border: 0;
     padding-right: 0;
-    padding-left: 0; }
+    padding-left: 0;
+    font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace; }
 
 /**
  * Wrapper

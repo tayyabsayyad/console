@@ -16,15 +16,99 @@ require "rubygems"
 require "rake"
 require 'securerandom'
 require "time"
+require "fileutils"
+require "json"
+require "yaml"
 
 SOURCE = '.'
 CONFIG = {
   'version' => "1.0.0",
   'layouts' => File.join(SOURCE, "_layouts"),
   'posts' => File.join(SOURCE, "_posts"),
+  'categories' => File.join(SOURCE, "category"),
   'post_ext' => "md",
 }
 
+# Usage: rake category title="" [href=""]  [id=""] [subcat_of="id of super category"]
+# remove []! this is only to say that these fields are optional.
+# By default, the href and id would be made by making the title lowercased.
+# Note that the after performing this task, the json files will be uglified. To prettify, please google 'json prettyfier'
+desc "Create a new category in #{CONFIG['categories']}"
+task :category do
+  abort("rake aborted: '#{CONFIG['categories']}' directory not found.") unless FileTest.directory?(CONFIG['categories'])
+
+  title = ENV['title'] || "rand-cat"
+  href = ENV['href'] || title.downcase.strip.gsub(' ', '-').gsub(/[^\w-]/, '')
+  id = ENV['id'] || title.downcase.strip.gsub(' ', '-').gsub(/[^\w-]/, '')
+  subcat_of = ENV['subcat_of'] || ""
+  cat_file = '_data/categories.json'
+  trans_file = '_data/localization.json'
+
+  if(subcat_of != "")
+    FileUtils::mkdir_p File.join(CONFIG['categories'], "#{subcat_of}/#{id}")
+    filename = File.join(CONFIG['categories'], "#{subcat_of}/#{id}/index.#{CONFIG['post_ext']}")
+  else
+    FileUtils::mkdir_p File.join(CONFIG['categories'], "#{id}")
+    filename = File.join(CONFIG['categories'], "#{id}/index.#{CONFIG['post_ext']}")
+  end
+
+  if(File.exist?(filename))
+    abort("rake aborted") if ask("#{filename} already exists. Overwrite?", ['y', 'n']) == 'n'
+  end
+
+  puts "Creating new category: #{filename}."
+
+  open(filename, 'w') do |category|
+    category.puts "---"
+    category.puts "layout: post"
+    category.puts "title: #{title}"
+    category.puts "category: #{id}"
+    category.puts "---"
+    category.puts ""
+    category.puts "{% include category.html param = page.layout %}"
+  end
+
+  #loading _config.yml to fetch languages option.
+  config_yml = YAML.load_file('_config.yml')
+  available_langs = config_yml['languages']
+  translated = Hash.new
+
+  #localization step
+  for lang in available_langs
+    puts "Please enter " + lang + " translation for the category '" + title + "':"
+    ARGV.clear
+    response = gets.chomp()
+    translated[lang] = response
+  end
+
+  tempJSON = Hash.new
+  tempJSON[id] = translated
+  permJSON = tempJSON.to_json
+  permJSON[0] = "" # will have to remove the first { to concatenate to existing string.
+
+  #adding the localization for the category into localization.json file
+  File.truncate(trans_file, File.size(trans_file) - 1)
+  File.open(trans_file, 'a') do |trans|
+    trans.write(',' + permJSON)
+  end
+
+  #temporary json (which will be parsed to JSON)
+  tempJSON = {
+    "title" => title,
+    "href" => href,
+    "id" => id
+  }
+
+  #adding the category into categories.json file
+  File.truncate(cat_file, File.size(cat_file) - 1)
+
+  File.open(cat_file, 'a') do |cat|
+   cat.write(',' + tempJSON.to_json + ']')
+  end
+
+  puts "Category '#{title}' has been successfully created!"
+
+end
 
 # Usage: rake post title="Title" [date="2017-01-13"] [category="category"]
 # remove []! this is only to say that these fields are optional.
@@ -60,6 +144,7 @@ task :post do
     post.puts "date: #{date}"
     post.puts "comments: true"
     post.puts "disqus_identifier: #{SecureRandom.hex(8)}"
+    post.puts "highlights: false"
     post.puts "---"
   end
 

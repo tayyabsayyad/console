@@ -86,6 +86,27 @@ task :category do
   permJSON = tempJSON.to_json
   permJSON[0] = "" # will have to remove the first { to concatenate to existing string.
 
+  #parsing
+  permJSON.insert(permJSON.index('{'), '[')
+
+  indexes = Array.new
+
+  for i in (0..permJSON.length)
+    if(permJSON[i] == ',')
+      indexes.push(i)
+    end
+  end
+
+  counter = 0
+
+  for idx in indexes
+    permJSON.insert(idx + counter, '}')
+    permJSON.insert(idx + counter + 2, '{')
+    counter += 2
+  end
+
+  permJSON.insert(permJSON.rindex('}'), ']')
+
   #adding the localization for the category into localization.json file
   File.truncate(trans_file, File.size(trans_file) - 1)
   File.open(trans_file, 'a') do |trans|

@@ -48,6 +48,9 @@ exclude:
 paginate: 5
 paginate_path: "/archive/page:num/"
 
+# Related posts settings
+max_related_posts_num: 4
+
 # sass settings (you can turn this on but please run gulp)
 #sass:
 #  sass_dir: _sass

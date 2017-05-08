@@ -105,7 +105,7 @@ rake post title="Title" [date="2017-01-13"] [category="category"]
 
 [] are optionals.
 
-### Creating a post
+### Creating a category
 <div id='create-category'></div>
 
 Please use `rake` command to create a category. Using this command would automatically generate the following data:

@@ -32,6 +32,7 @@ There are more features to come. Stay tuned!
   * [Using a BrowserSync instead of Jekyll generated local server](#why-browsersync)
 * [Usage](#usage)
   * [Creating a post](#create-post)
+  * [Creating a category](#create-category)
   * [Integrating Disqus with your website](#integrate-disqus)
   * [Integrating txtpen with your website](#integrate-txtpen)
   * [Customizing Console Theme Colors](#customize-console-color)
@@ -103,6 +104,25 @@ rake post title="Title" [date="2017-01-13"] [category="category"]
 ```
 
 [] are optionals.
+
+### Creating a post
+<div id='create-category'></div>
+
+Please use `rake` command to create a category. Using this command would automatically generate the following data:
+
+<ul>
+<li> create the category detail in `_data/categories.json` </li>
+<li> create the localization data for the category in `_data/localization.json` </li>
+<li> create necessary folders and files in category folder </li>
+</ul>
+
+The syntax for this rake command is [assuming that you are in the root folder]:
+
+```ruby
+rake category title="Title" [href=""] [id=""] [subcat_of="id of super category"]
+```
+
+[] are optionals. Please for href, do not add '/'! This script will automatically create that for you.
 
 ### Integrating Disqus with your website.
 <div id='integrate-disqus'></div>
@@ -181,6 +201,8 @@ Explore the files and you will see plenty of examples. The plugin will automatic
 This theme uses data-driven categorization, which makes the construction of categoization simple and succinct. The json file for category is located in _data/categories.json. Each category has three attributes: title, href and id (used to uniquely identify them). Please view the sample file to get a sense of it.
 
 To create the category pages, you need to create a 'category' folder and subfolders would be the name of categories. They can be further nested (i.e. sub categories). Each folder would have index.md (as we will be using folder structure for creating the page for category.) You can reference my website or refer to the examples provided.
+
+**Now, I have create a rake command that would simplify this process please visit [Creating a category](#create-category)**
 
 ## Layouts and Blocks
 <div id='layout-block'></div>

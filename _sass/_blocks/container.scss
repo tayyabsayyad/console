@@ -2,6 +2,18 @@
 
   flex-basis: 100%;
 
+  &-related{
+    margin-top: 100px;
+    border-top: 1px solid map-get($colors, _grey-light);
+    padding: 10px;    
+  }
+
+  &-block{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
   &-inner{
     display: flex;
 

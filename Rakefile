@@ -116,7 +116,7 @@ task :category do
   #temporary json (which will be parsed to JSON)
   tempJSON = {
     "title" => title,
-    "href" => href,
+    "href" => '/' + href,
     "id" => id
   }
 
